@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eye Gaze Music Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        .rectangle-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            width: 90%;
+            height: 90%;
+        }
+        .rectangle {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+            cursor: none;
+        }
+        .rectangle:hover {
+            transform: scale(1.2); /* Expand the rectangle when hovered */
+        }
+    </style>
+</head>
+<body>
+
+<div class="rectangle-container">
+    <div class="rectangle" style="background-color: #FF6347;" onmouseover="playNoteAndAnimate(this, 'C4')"></div>
+    <div class="rectangle" style="background-color: #3CB371;" onmouseover="playNoteAndAnimate(this, 'D4')"></div>
+    <div class="rectangle" style="background-color: #1E90FF;" onmouseover="playNoteAndAnimate(this, 'E4')"></div>
+    <div class="rectangle" style="background-color: #FFD700;" onmouseover="playNoteAndAnimate(this, 'F4')"></div>
+    <div class="rectangle" style="background-color: #9370DB;" onmouseover="playNoteAndAnimate(this, 'G4')"></div>
+    <div class="rectangle" style="background-color: #FF4500;" onmouseover="playNoteAndAnimate(this, 'A4')"></div>
+    <div class="rectangle" style="background-color: #48D1CC;" onmouseover="playNoteAndAnimate(this, 'B4')"></div>
+    <div class="rectangle" style="background-color: #DA70D6;" onmouseover="playNoteAndAnimate(this, 'C5')"></div>
+    <div class="rectangle" style="background-color: #8A2BE2;" onmouseover="playNoteAndAnimate(this, 'D5')"></div>
+    <div class="rectangle" style="background-color: #7FFF00;" onmouseover="playNoteAndAnimate(this, 'E5')"></div>
+</div>
+
+<script>
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playNoteAndAnimate(element, note) {
+        element.style.transform = 'scale(1.2)';
+        setTimeout(() => element.style.transform = 'scale(1)', 500);
+
+        // Play the note using the reusable AudioContext
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(getFrequency(note), audioContext.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+        oscillator.stop(audioContext.currentTime + 1);
+    }
+
+    function getFrequency(note) {
+        const notes = {
+            'C4': 261.63,
+            'D4': 293.66,
+            'E4': 329.63,
+            'F4': 349.23,
+            'G4': 392.00,
+            'A4': 440.00,
+            'B4': 493.88,
+            'C5': 523.25,
+            'D5': 587.33,
+            'E5': 659.25
+        };
+        return notes[note];
+    }
+</script>
+
+</body>
+</html>
