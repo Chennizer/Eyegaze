@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu musique contrôle oculaire EMB</title>
+    <title>jeu musical contrôle oculaire EMB</title>
     <style>
         body {
             margin: 0;
@@ -26,8 +26,8 @@
             justify-items: center;
         }
         .circle {
-            width: 157.5px; /* Size of the circles */
-            height: 157.5px; /* Maintain aspect ratio */
+            width: 236.25px; /* 50% larger */
+            height: 236.25px; /* Maintain aspect ratio */
             border-radius: 50%;
             background-color: #FF6347;
             transition: transform 1s ease;
@@ -50,7 +50,7 @@
 </head>
 <body>
 
-<button class="start-button" onclick="startGame()">Start Game</button>
+<button class="start-button" onclick="startGame()">Commencer :)</button>
 
 <div class="circle-container">
     <div class="circle" style="background-color: #FF6347;" onmouseover="startHover(this, 'C4')" onmouseout="stopHover(this)"></div>
