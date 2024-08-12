@@ -13,25 +13,42 @@
             align-items: center;
             height: 100vh;
             background-color: #000;
+            flex-direction: column;
         }
         .circle-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 40px;
+            gap: 30px; /* Reduced gap for smaller circles */
             width: 90%;
             height: 90%;
+            display: none; /* Initially hidden */
         }
         .circle {
-            width: 100%;
-            padding-bottom: 100%;
+            width: 70px; /* Fixed width */
+            height: 70px; /* Fixed height to make it a circle */
             border-radius: 50%;
             background-color: #FF6347;
             transition: transform 1s ease;
             cursor: none;
         }
+        .start-button {
+            padding: 20px 40px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .start-button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
+
+<button class="start-button" onclick="startGame()">Start Game</button>
 
 <div class="circle-container">
     <div class="circle" style="background-color: #FF6347;" onmouseover="startHover(this, 'C4')" onmouseout="stopHover(this)"></div>
@@ -48,6 +65,13 @@
 
 <script>
     let hoverTimeout;
+    let audioContext;
+
+    function startGame() {
+        document.querySelector('.start-button').style.display = 'none'; // Hide start button
+        document.querySelector('.circle-container').style.display = 'grid'; // Show circles
+        audioContext = new (window.AudioContext || window.webkitAudioContext)(); // Initialize AudioContext
+    }
 
     function startHover(element, note) {
         element.style.transform = 'scale(1.5)';
@@ -62,18 +86,13 @@
         element.style.transform = 'scale(1)'; // Reset the scale
     }
 
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
     function playNoteAndAnimate(element, note) {
-        // Play the note using the reusable AudioContext
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
-
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(getFrequency(note), audioContext.currentTime);
+        oscillator.frequency.value = getFrequency(note);
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-
         oscillator.start();
         gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
         oscillator.stop(audioContext.currentTime + 1);
@@ -81,16 +100,8 @@
 
     function getFrequency(note) {
         const notes = {
-            'C4': 261.63,
-            'D4': 293.66,
-            'E4': 329.63,
-            'F4': 349.23,
-            'G4': 392.00,
-            'A4': 440.00,
-            'B4': 493.88,
-            'C5': 523.25,
-            'D5': 587.33,
-            'E5': 659.25
+            'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00,
+            'A4': 440.00, 'B4': 493.88, 'C5': 523.25, 'D5': 587.33, 'E5': 659.25
         };
         return notes[note];
     }
