@@ -64,48 +64,57 @@
 </div>
 
 <script>
-    let hoverTimeout;
-    let audioContext;
+   let hoverTimeout;
+let audioContext;
 
-    function startGame() {
-        document.querySelector('.start-button').style.display = 'none'; // Hide start button
-        document.querySelector('.circle-container').style.display = 'grid'; // Show circles
-        audioContext = new (window.AudioContext || window.webkitAudioContext)(); // Initialize AudioContext
-    }
+function startGame() {
+    document.getElementById('control-panel').style.display = 'none';
+    document.querySelector('.musical-circle-container').style.display = 'grid';
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+}
 
-    function startHover(element, note) {
-        element.style.transform = 'scale(1.5)';
+document.getElementById('control-panel-start-button').addEventListener('click', startGame);
 
-        hoverTimeout = setTimeout(function() {
-            playNoteAndAnimate(element, note);
-        }, 1000); // 1 second delay
-    }
+function startHover(element) {
+    const note = element.getAttribute('data-note');
+    const hoverTime = parseInt(document.getElementById('hover-time-input').value);
 
-    function stopHover(element) {
-        clearTimeout(hoverTimeout); // Stop the timeout if the mouse is moved away
-        element.style.transform = 'scale(1)'; // Reset the scale
-    }
+    element.style.transition = `transform ${hoverTime}ms ease`; // Dynamic transition duration
+    element.style.transform = 'scale(1.5)';
 
-    function playNoteAndAnimate(element, note) {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        oscillator.type = 'sine';
-        oscillator.frequency.value = getFrequency(note);
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
-        oscillator.stop(audioContext.currentTime + 1);
-    }
+    hoverTimeout = setTimeout(function() {
+        playNoteAndAnimate(element, note);
+    }, hoverTime); // Play sound after hover time
+}
 
-    function getFrequency(note) {
-        const notes = {
-            'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00,
-            'A4': 440.00, 'B4': 493.88, 'C5': 523.25
-        };
-        return notes[note];
-    }
-</script>
+function stopHover(element) {
+    clearTimeout(hoverTimeout); // Stop the timeout if the mouse is moved away
+    element.style.transform = 'scale(1)'; // Reset the scale
+    element.style.transition = ''; // Clear the transition to avoid conflicts on re-hover
+}
 
-</body>
-</html>
+function playNoteAndAnimate(element, note) {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = getFrequency(note);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    oscillator.start();
+    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+    oscillator.stop(audioContext.currentTime + 1);
+}
+
+function getFrequency(note) {
+    const notes = {
+        'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00,
+        'A4': 440.00, 'B4': 493.88, 'C5': 523.25
+    };
+    return notes[note];
+}
+
+document.querySelectorAll('.musical-circle').forEach(circle => {
+    circle.addEventListener('mouseover', () => startHover(circle));
+    circle.addEventListener('mouseout', () => stopHover(circle));
+});
+
