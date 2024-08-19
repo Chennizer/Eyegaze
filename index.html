@@ -40,6 +40,8 @@
     <div class="musical-circle" style="background-color: #DA70D6;" data-note="C5"></div>
 </div>
 
+<div id="hover-circle" class="dwell-circle"></div>
+
 <script src="../../js/scripts.js"></script>
 <script>
     let hoverTimeout;
@@ -57,18 +59,37 @@
         const note = element.getAttribute('data-note');
         const hoverTime = parseInt(document.getElementById('hover-time-input').value);
 
-        element.style.transition = `transform ${hoverTime}ms ease`; // Dynamic transition duration
-        element.style.transform = 'scale(1.5)';
+        // Reset hover circle size and position
+        const hoverCircle = document.getElementById('hover-circle');
+        hoverCircle.style.transition = 'none';
+        hoverCircle.style.width = '20px';
+        hoverCircle.style.height = '20px';
+        hoverCircle.style.display = 'block';
+
+        // Position the hover circle at the cursor location
+        document.addEventListener('mousemove', moveCircle);
+
+        setTimeout(() => {
+            hoverCircle.style.transition = `width ${hoverTime}ms ease, height ${hoverTime}ms ease`;
+            hoverCircle.style.width = '100px';
+            hoverCircle.style.height = '100px';
+        }, 0);
 
         hoverTimeout = setTimeout(function() {
             playNoteAndAnimate(element, note);
-        }, hoverTime); // Play sound after hover time
+            hoverCircle.style.display = 'none';
+        }, hoverTime);
     }
 
     function stopHover(element) {
-        clearTimeout(hoverTimeout); // Stop the timeout if the mouse is moved away
-        element.style.transform = 'scale(1)'; // Reset the scale
-        element.style.transition = 'transform 200ms ease'; // Reset transition for shrinking back
+        clearTimeout(hoverTimeout);
+        document.getElementById('hover-circle').style.display = 'none';
+    }
+
+    function moveCircle(event) {
+        const hoverCircle = document.getElementById('hover-circle');
+        hoverCircle.style.left = `${event.clientX - hoverCircle.offsetWidth / 2}px`;
+        hoverCircle.style.top = `${event.clientY - hoverCircle.offsetHeight / 2}px`;
     }
 
     function playNoteAndAnimate(element, note) {
