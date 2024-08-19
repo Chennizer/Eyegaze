@@ -40,6 +40,7 @@
     <div class="musical-circle" style="background-color: #DA70D6;" data-note="C5"></div>
 </div>
 
+<!-- Dwell circle for hover effect -->
 <div id="hover-circle" class="dwell-circle"></div>
 
 <script src="../../js/scripts.js"></script>
@@ -59,14 +60,12 @@
         const note = element.getAttribute('data-note');
         const hoverTime = parseInt(document.getElementById('hover-time-input').value);
 
-        // Reset hover circle size and position
         const hoverCircle = document.getElementById('hover-circle');
         hoverCircle.style.transition = 'none';
         hoverCircle.style.width = '20px';
         hoverCircle.style.height = '20px';
         hoverCircle.style.display = 'block';
 
-        // Position the hover circle at the cursor location
         document.addEventListener('mousemove', moveCircle);
 
         setTimeout(() => {
@@ -81,7 +80,7 @@
         }, hoverTime);
     }
 
-    function stopHover(element) {
+    function stopHover() {
         clearTimeout(hoverTimeout);
         document.getElementById('hover-circle').style.display = 'none';
     }
