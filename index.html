@@ -68,7 +68,8 @@
     function stopHover(element) {
         clearTimeout(hoverTimeout); // Stop the timeout if the mouse is moved away
         element.style.transform = 'scale(1)'; // Reset the scale
-        element.style.transition = ''; // Clear the transition to avoid conflicts on re-hover
+        // Reset the transition to ensure proper functionality on the next hover
+        element.style.transition = 'transform 0.3s ease';
     }
 
     function playNoteAndAnimate(element, note) {
